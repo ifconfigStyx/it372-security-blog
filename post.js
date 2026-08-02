@@ -57,7 +57,7 @@ const escapeHtml = value =>
     </p>
 
     <div class="post-content">
-      ${escapeHtml(post.content)}
+      ${marked.parse(post.content || "")}
     </div>
 
   `;
