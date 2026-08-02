@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>When "Make It Run" Becomes a Security Incident</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
+            color: #1f2933;
+            line-height: 1.7;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 70px 20px;
+        }
+
+        header .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        header p {
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 48px;
+            line-height: 1.15;
+            margin: 10px 0 20px;
+        }
+
+        header .subtitle {
+            font-size: 20px;
+            color: #d1d5db;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        article {
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        h2 {
+            color: #111827;
+            margin-top: 45px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #374151;
+            margin-top: 30px;
+        }
+
+        .principle {
+            background: #f3f4f6;
+            border-left: 5px solid #2563eb;
+            padding: 18px 22px;
+            margin: 25px 0;
+            border-radius: 5px;
+        }
+
+        .principle strong {
+            color: #1d4ed8;
+        }
+
+        .warning {
+            background: #fff7ed;
+            border-left: 5px solid #f97316;
+            padding: 18px 22px;
+            margin: 25px 0;
+        }
+
+        .author {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+            h1 {
+                font-size: 36px;
+            }
+
+            article {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container">
+        <p>IT 372 — Information Assurance and Security 1</p>
+
+        <h1>When "Make It Run" Becomes a Security Incident</h1>
+
+        <div class="subtitle">
+            Secure Design Lessons from a Hackathon Prototype Gone Wrong
+        </div>
+
+        <p class="author">
+            By Vincent Espada
+        </p>
+    </div>
+</header>
+
+<main>
+<article>
+
+<h2>Introduction</h2>
+
+<p>
+The university platform in this case is a good example of how quickly a successful
+prototype can become a serious security problem. Three students created a
+mobile-and-web application for student organizations in only 72 hours. The
+application allowed organizations to manage memberships, collect event fees,
+share files, and communicate through private group chats. The project was
+successful enough to win a hackathon prize and attract more than a dozen
+organizations within a month.
+</p>
+
+<p>
+The problem was that the developers treated the application as a prototype even
+after it started handling real personal information. The system stored full
+names, student numbers, phone numbers, GCash payment screenshots, uploaded
+identification photos, and private messages. These are not harmless pieces of
+test data. They are information that can affect a person's privacy and security
+if exposed.
+</p>
+
+<p>
+The discovery of the vulnerability demonstrated the seriousness of the problem.
+A user could change the number in a profile URL, such as
+<code>/profile/1048</code> to <code>/profile/1049</code>, and access another
+student's information. The application did not properly verify whether the
+logged-in user was authorized to access the requested record. This is a classic
+example of broken access control and a violation of the principle of complete
+mediation.
+</p>
+
+<p>
+The situation became even worse when the public GitHub repository was inspected.
+Database credentials and a payment API key had been committed in plain text.
+The application also provided broad database access to accounts, exposed full
+stack traces through error pages, and operated over plain HTTP. These failures
+show that security was added neither during development nor before deployment.
+The system was optimized to work quickly rather than to work safely.
+</p>
+
+<h2>What Went Wrong?</h2>
+
+<p>
+The biggest problem was not one individual vulnerability. It was a failure to
+apply secure design principles throughout the development process. The team
+trusted generated code without sufficiently reviewing its security implications.
+AI coding assistants can produce code that looks professional and works
+correctly while still containing serious vulnerabilities. The responsibility
+for the final system, however, remains with the developers.
+</p>
+
+<div class="principle">
+    <strong>Complete Mediation:</strong>
+    Every request to access a protected resource should be checked for
+    authorization. The profile vulnerability violated this principle because
+    changing an ID in a URL allowed access to another student's record without
+    checking whether the requester was authorized.
+</div>
+
+<div class="principle">
+    <strong>Least Privilege:</strong>
+    Users and services should receive only the permissions they actually need.
+    Giving every account broad database read access violated this principle.
+    If one account were compromised, an attacker could potentially access far
+    more information than necessary.
+</div>
+
+<div class="principle">
+    <strong>Fail-Safe Defaults:</strong>
+    Access should be denied unless permission has explicitly been granted.
+    The application effectively did the opposite by allowing access to records
+    without properly establishing authorization.
+</div>
+
+<div class="principle">
+    <strong>Defense in Depth:</strong>
+    Important systems should have multiple security controls instead of relying
+    on one layer. This application lacked several layers of protection at the
+    same time: authorization checks, restricted database permissions, secure
+    error handling, HTTPS, and proper secret management.
+</div>
+
+<div class="principle">
+    <strong>Economy of Mechanism:</strong>
+    Security mechanisms should remain simple enough to understand and review.
+    Rapid AI-generated scaffolding can make an application appear complete while
+    hiding assumptions about authentication, authorization, database access,
+    and error handling. Developers must understand the mechanisms instead of
+    blindly accepting generated code.
+</div>
+
+<h2>Horizon One: Short-Term Containment</h2>
+
+<p>
+The first priority would be containment. Since the application is already
+exposing real student information, I would immediately take the application
+offline or place it behind a maintenance page. This is preferable to leaving a
+known vulnerability available while attempting to fix it.
+</p>
+
+<p>
+The next step would be to revoke every exposed credential. The database
+password and payment API key found in Git history should be considered
+compromised even if the repository is later made private or the files are
+deleted. New credentials should be generated, and the old ones should be
+invalidated.
+</p>
+
+<p>
+The database should then be reviewed for unauthorized access. Logs should be
+examined to determine whether users accessed records that they were not
+supposed to see. The team should preserve relevant logs and investigate the
+scope of the exposure rather than assuming that nobody exploited the
+vulnerability.
+</p>
+
+<p>
+The profile endpoint should be disabled until proper authorization checks are
+implemented. Every request should verify both the identity of the user and
+whether that user has permission to access the requested resource.
+</p>
+
+<p>
+The application should also stop displaying full stack traces to users.
+Production error messages should provide a generic message while detailed
+errors are recorded in protected server logs. This follows the principle of
+information hiding and reduces the amount of information available to an
+attacker.
+</p>
+
+<p>
+Finally, HTTPS should be enabled before the system is made available again.
+Sensitive information, authentication credentials, uploaded files, and private
+communications should not be transmitted over plain HTTP.
+</p>
+
+<div class="warning">
+    <strong>Most important lesson:</strong>
+    containment comes before convenience. A system containing real personal
+    information should not remain online simply because taking it offline is
+    inconvenient.
+</div>
+
+<h2>Horizon Two: Rebuilding the System Correctly</h2>
+
+<p>
+After containment, the application should be rebuilt around security rather
+than attempting to patch each vulnerability individually. Authentication and
+authorization should be designed first. Every protected endpoint should verify
+the user's identity and permissions on the server side. Client-side checks
+should never be treated as sufficient security controls.
+</p>
+
+<p>
+The database should follow least privilege. The application should use a
+restricted database account that has only the permissions required by the
+application. Administrative database credentials should never be included in
+source code or distributed to normal users.
+</p>
+
+<p>
+Secrets should be stored using environment variables or a dedicated secret
+management system. API keys, database passwords, signing keys, and other
+credentials should never be committed to Git. If a secret accidentally enters
+Git history, it should immediately be revoked and replaced.
+</p>
+
+<p>
+Input validation should also be implemented on the server. User-provided IDs,
+file uploads, messages, and other input should be treated as untrusted.
+Uploaded files should have appropriate size and type restrictions and should
+not automatically become publicly accessible.
+</p>
+
+<p>
+The system should use HTTPS everywhere and protect authentication sessions
+properly. Passwords should be securely hashed, sessions should have reasonable
+expiration and protection against theft, and sensitive actions should require
+appropriate authorization.
+</p>
+
+<p>
+Security testing should become part of the development process. Before every
+release, the team should test for broken access control, insecure direct object
+references, credential exposure, injection vulnerabilities, insecure file
+uploads, excessive permissions, and information leakage through errors.
+</p>
+
+<p>
+Most importantly, AI-generated code should be treated as code written by an
+untrusted junior developer: useful, fast, and capable of producing mistakes.
+Developers should review generated code, understand what it does, test its
+security assumptions, and avoid accepting code simply because it compiles or
+works during a demonstration.
+</p>
+
+<h2>RA No. 10173 and Developer Responsibility</h2>
+
+<p>
+The security failures in this case are also relevant to the Philippines'
+Data Privacy Act of 2012, Republic Act No. 10173. The application was processing
+personal information belonging to students, including identifying information,
+contact details, identification documents, payment-related information, and
+private communications.
+</p>
+
+<p>
+Developers therefore cannot treat security as merely a technical preference.
+The design and implementation of an application can directly affect whether
+personal information is protected. Appropriate organizational and technical
+measures should be considered when personal information is collected, stored,
+processed, and transmitted.
+</p>
+
+<p>
+The developers should therefore consider privacy and security from the
+beginning of the system's lifecycle rather than waiting until after an
+incident. Data minimization, access control, secure storage, logging,
+appropriate retention, and controlled disclosure should all be part of the
+system design.
+</p>
+
+<h2>Conclusion: Speed vs. Responsibility</h2>
+
+<p>
+The original team succeeded at one thing extremely well: they shipped quickly.
+A working prototype in 72 hours is impressive. The problem was allowing the
+prototype's security assumptions to remain in place after real people began
+trusting the application with their information.
+</p>
+
+<p>
+Shipping fast and building securely are not necessarily opposites. The real
+difference is whether security is treated as part of the product or as an
+optional feature that can be added later. Authentication, authorization,
+secret management, HTTPS, secure error handling, and least-privilege access
+should be considered basic requirements for production software.
+</p>
+
+<p>
+AI assistants make this lesson even more important. Generated code can save
+developers enormous amounts of time, but plausible code is not automatically
+secure code. An AI assistant may generate an endpoint that works perfectly
+while forgetting an authorization check. It may create a database connection
+using excessive privileges or place a secret directly in a configuration file.
+The developer still has to review and take responsibility for the resulting
+system.
+</p>
+
+<p>
+Ultimately, the people using the application are more important than the speed
+of the deployment. Students trusted the platform with their identities,
+payments, documents, and private conversations. That trust creates a
+responsibility for the developers to design the system so that their
+information is protected.
+</p>
+
+<p>
+The best lesson from this incident is therefore simple: <strong>make it run,
+but make it secure before making people depend on it.</strong> Secure design
+principles are not obstacles to innovation. They are what allow software to
+grow from a successful prototype into a system that people can safely trust.
+</p>
+
+</article>
+</main>
+
+<footer>
+    IT 372 — Information Assurance and Security 1<br>
+    Secure Design Principles Technical Blog
+</footer>
+
+</body>
+</html>
