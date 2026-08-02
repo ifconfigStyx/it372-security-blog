@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+
+<title>Admin — Zero Trust Journal</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+<header class="site-header">
+
+<div class="wrap nav">
+
+<a class="brand" href="/">
+ZERO TRUST <span>JOURNAL</span>
+</a>
+
+<nav>
+<a href="/">View blog</a>
+</nav>
+
+</div>
+
+</header>
+
+
+<main class="wrap admin">
+
+
+<section id="login-panel" class="panel">
+
+<p class="eyebrow">
+PRIVATE AREA
+</p>
+
+<h1>
+Admin
+</h1>
+
+<p class="muted">
+Only you should use this page.
+</p>
+
+
+<form id="login-form">
+
+<label>
+Password
+
+<input
+id="password"
+type="password"
+required
+autocomplete="current-password"
+>
+
+</label>
+
+
+<button>
+Sign in
+</button>
+
+
+<p
+id="login-error"
+class="error"
+></p>
+
+</form>
+
+</section>
+
+
+
+<section
+id="editor-panel"
+class="hidden"
+>
+
+
+<div class="section-head">
+
+<div>
+
+<p class="eyebrow">
+POST MANAGER
+</p>
+
+<h1>
+Manage posts
+</h1>
+
+</div>
+
+
+<div class="actions">
+
+<button id="new-post">
+New post
+</button>
+
+<button
+id="logout"
+class="secondary"
+>
+Log out
+</button>
+
+</div>
+
+</div>
+
+
+
+<div class="admin-layout">
+
+
+<aside
+id="post-manager"
+class="panel"
+>
+</aside>
+
+
+<form
+id="editor"
+class="panel"
+>
+
+
+<input
+id="post-id"
+type="hidden"
+>
+
+
+<label>
+
+Title
+
+<input
+id="title"
+required
+maxlength="180"
+>
+
+</label>
+
+
+<div class="two">
+
+
+<label>
+
+Category
+
+<input
+id="category"
+maxlength="80"
+placeholder="Information Security"
+>
+
+</label>
+
+
+<label>
+
+Date
+
+<input
+id="date"
+type="date"
+required
+>
+
+</label>
+
+
+</div>
+
+
+<label>
+
+Excerpt
+
+<textarea
+id="excerpt"
+rows="3"
+maxlength="400"
+></textarea>
+
+</label>
+
+
+<label>
+
+Content
+
+<textarea
+id="content"
+rows="18"
+required
+placeholder="Write your post here..."
+></textarea>
+
+</label>
+
+
+<div class="actions">
+
+<button type="submit">
+Save post
+</button>
+
+
+<button
+type="button"
+id="delete"
+class="danger"
+>
+Delete
+</button>
+
+</div>
+
+
+<p
+id="save-status"
+class="muted"
+></p>
+
+
+</form>
+
+</div>
+
+</section>
+
+</main>
+
+
+<script src="admin.js"></script>
+
+</body>
+</html>
