@@ -2,17 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Zero Trust Journal</title>
-  <meta name="description" content="Vincent's IT 372 Information Assurance and Security blog.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IT 372 Blog - Vincent</title>
+  <meta name="description" content="My blog for IT 372 Information Assurance and Security.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="site-header">
   <div class="wrap nav">
-    <a class="brand" href="/">ZERO TRUST <span>JOURNAL</span></a>
-
+    <a class="brand" href="/">IT 372 <span>Blog</span></a>
     <nav>
       <a href="/">Home</a>
       <a href="#posts">Posts</a>
@@ -22,43 +21,35 @@
 
 <main class="wrap">
 
-<section class="hero">
-  <p class="eyebrow">IT 372 • INFORMATION ASSURANCE & SECURITY</p>
+  <section class="hero">
+    <p class="eyebrow">IT 372 — Information Assurance & Security</p>
+    <h1>My Security Blog</h1>
+    <p class="lead">
+      This is my blog for IT 372. I write about information security topics,
+      secure design principles, and things I learn from class.
+    </p>
+  </section>
 
-  <h1>
-    Security, privacy, and the systems we trust.
-  </h1>
+  <section id="posts">
+    <div class="section-head">
+      <h2>Posts</h2>
+      <input
+        id="search"
+        type="search"
+        placeholder="Search..."
+        aria-label="Search posts"
+      >
+    </div>
 
-  <p class="lead">
-    A personal course blog about secure design, information assurance,
-    privacy, and what happens when developers forget that software
-    affects real people.
-  </p>
-</section>
-
-<section id="posts">
-
-  <div class="section-head">
-    <h2>Latest posts</h2>
-
-    <input
-      id="search"
-      type="search"
-      placeholder="Search posts..."
-      aria-label="Search posts"
-    >
-  </div>
-
-  <div id="post-list" class="post-grid">
-    <p class="muted">Loading posts…</p>
-  </div>
-
-</section>
+    <div id="post-list" class="post-grid">
+      <p class="muted">Loading posts...</p>
+    </div>
+  </section>
 
 </main>
 
 <footer class="wrap footer">
-  Zero Trust Journal • IT 372
+  IT 372 Blog &copy; 2026
 </footer>
 
 <script src="app.js"></script>

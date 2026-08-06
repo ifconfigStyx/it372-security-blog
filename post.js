@@ -1,70 +1,43 @@
-const root =
-  document.querySelector("#post");
+var root = document.querySelector("#post");
+var params = new URLSearchParams(location.search);
+var id = params.get("id");
 
-const id =
-  new URLSearchParams(location.search).get("id");
+function escapeHtml(str) {
+  if (!str) return "";
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
-const escapeHtml = value =>
-  (value || "").replace(
-    /[&<>"']/g,
-    character => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    }[character])
-  );
+(async function () {
+  var res = await fetch("/api/posts");
+  var posts = await res.json();
 
-
-(async () => {
-
-  const response =
-    await fetch("/api/posts");
-
-  const posts =
-    await response.json();
-
-  const post =
-    posts.find(
-      item => String(item.id) === String(id)
-    );
-
-  if (!post) {
-
-    root.innerHTML =
-      "<h1>Post not found</h1>";
-
-    return;
-
+  var post = null;
+  for (var i = 0; i < posts.length; i++) {
+    if (String(posts[i].id) === String(id)) {
+      post = posts[i];
+      break;
+    }
   }
 
-  document.title =
-    `${post.title} — Zero Trust Journal`;
+  if (!post) {
+    root.innerHTML = "<h1>Post not found</h1>";
+    return;
+  }
 
-  root.innerHTML = `
+  document.title = post.title + " — IT 372 Blog";
 
-    <div class="tag">
-      ${escapeHtml(post.category || "IT 372")}
-    </div>
+  var html = "";
+  html += '<div class="tag">' + escapeHtml(post.category || "IT 372") + '</div>';
+  html += '<h1>' + escapeHtml(post.title) + '</h1>';
+  html += '<p class="meta">' + escapeHtml(post.date || "") + '</p>';
+  html += '<div class="post-content">' + marked.parse(post.content || "") + '</div>';
 
-    <h1>
-      ${escapeHtml(post.title)}
-    </h1>
-
-    <p class="meta">
-      ${escapeHtml(post.date || "")}
-    </p>
-
-    <div class="post-content">
-      ${marked.parse(post.content || "")}
-    </div>
-
-  `;
-
-})().catch(() => {
-
-  root.innerHTML =
-    "<p class='error'>Could not load post.</p>";
-
+  root.innerHTML = html;
+})().catch(function () {
+  root.innerHTML = "<p class='error'>Could not load post.</p>";
 });
