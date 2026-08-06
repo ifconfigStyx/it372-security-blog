@@ -29,7 +29,7 @@ function escapeHtml(str) {
     return;
   }
 
-  document.title = post.title + " — IT 372 Blog";
+  document.title = post.title + " — Espada Blog";
 
   var html = "";
   html += '<div class="tag">' + escapeHtml(post.category || "IT 372") + '</div>';
