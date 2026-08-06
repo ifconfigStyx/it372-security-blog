@@ -29,10 +29,10 @@ function escapeHtml(str) {
     return;
   }
 
-  document.title = post.title + " — Espada Blog";
+  document.title = post.title;
 
   var html = "";
-  html += '<div class="tag">' + escapeHtml(post.category || "IT 372") + '</div>';
+  html += '<div class="tag">' + escapeHtml(post.category || "General") + '</div>';
   html += '<h1>' + escapeHtml(post.title) + '</h1>';
   html += '<p class="meta">' + escapeHtml(post.date || "") + '</p>';
   html += '<div class="post-content">' + marked.parse(post.content || "") + '</div>';

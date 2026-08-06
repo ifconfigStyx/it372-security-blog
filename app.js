@@ -35,7 +35,7 @@ function render() {
   for (var i = 0; i < filtered.length; i++) {
     var post = filtered[i];
     html += '<article class="card">';
-    html += '<div class="tag">' + escapeHtml(post.category || "IT 372") + '</div>';
+    html += '<div class="tag">' + escapeHtml(post.category || "General") + '</div>';
     html += '<a href="/post.html?id=' + encodeURIComponent(post.id) + '">';
     html += '<h3>' + escapeHtml(post.title) + '</h3>';
     html += '</a>';

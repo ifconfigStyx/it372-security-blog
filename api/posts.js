@@ -260,7 +260,7 @@ module.exports =
           category:
             String(
               post.category ||
-              "IT 372"
+              "General"
             ).trim(),
 
           date:
